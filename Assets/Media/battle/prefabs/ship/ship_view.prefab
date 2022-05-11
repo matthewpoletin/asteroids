@@ -351,15 +351,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 7912366827458491813}
-  _moveAcceleration: 0.1
-  _inertia: 0.025
-  _maxSpeed: 6
-  _steerSpeed: 250
   _bulletPrefab: {fileID: 2273646205680788740, guid: 94223c2a931a1bb48a4c84fb70f814a8, type: 3}
   _laserPrefab: {fileID: 3103748674759867316, guid: 58c6af6ddafaefb45817c91757a17cd5, type: 3}
   _muzzlePlaceholder: {fileID: 4327934327333186925}
-  _ammoResetTimeInSeconds: 5
-  _startLifeCount: 3
-  _immuneOnDamageTimeInSeconds: 5
   _stateIdle: {fileID: 7816126299038136349}
   _stateAccelerating: {fileID: 8331495820046671850}

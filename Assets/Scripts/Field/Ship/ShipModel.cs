@@ -4,8 +4,8 @@ namespace Asteroids.Field
 {
     public class ShipModel
     {
-        private readonly float _laserAmmoResetTimeSeconds;
-        private readonly int _maxLaserAmmoCount;
+        private float LaserAmmoResetTimeSeconds => Params.LaserAmmoResetTimeInSeconds;
+        private int MaxLaserAmmoCount => Params.MaxLaserAmmoCount;
 
         private int _laserAmmoCount;
 
@@ -16,7 +16,7 @@ namespace Asteroids.Field
             get => _laserAmmoCount;
             set
             {
-                _laserAmmoCount = Math.Clamp(value, 0, _maxLaserAmmoCount);
+                _laserAmmoCount = Math.Clamp(value, 0, MaxLaserAmmoCount);
                 UpdateLaserAmmoResetTimer();
                 OnLaserAmmoCountChanged?.Invoke(_laserAmmoCount);
             }
@@ -51,7 +51,7 @@ namespace Asteroids.Field
             }
         }
 
-        private readonly float _immuneOnDamageTimeInSeconds;
+        private float ImmuneOnDamageTimeInSeconds => Params.ImmuneOnDamageTimeInSeconds;
         private float _immuneTimer;
         public event Action OnImmuneStatusChanged;
 
@@ -60,15 +60,14 @@ namespace Asteroids.Field
             return _immuneTimer > 0;
         }
 
-        public ShipModel(int maxLaserAmmoCount, float laserAmmoResetTimeInSeconds, int startLifeCount,
-            float immuneOnDamageTimeInSeconds)
-        {
-            _laserAmmoResetTimeSeconds = laserAmmoResetTimeInSeconds;
-            _maxLaserAmmoCount = maxLaserAmmoCount;
-            _laserAmmoCount = _maxLaserAmmoCount;
+        public ShipParams Params { get; }
 
-            _lifeCount = startLifeCount;
-            _immuneOnDamageTimeInSeconds = immuneOnDamageTimeInSeconds;
+        public ShipModel(ShipParams shipParams)
+        {
+            Params = shipParams;
+
+            _laserAmmoCount = MaxLaserAmmoCount;
+            _lifeCount = Params.StartLifeCount;
         }
 
         public void Tick(float deltaTime)
@@ -99,9 +98,9 @@ namespace Asteroids.Field
                 return;
             }
 
-            if (_laserAmmoCount < _maxLaserAmmoCount)
+            if (_laserAmmoCount < MaxLaserAmmoCount)
             {
-                _laserAmmoResetTimer = _laserAmmoResetTimeSeconds;
+                _laserAmmoResetTimer = LaserAmmoResetTimeSeconds;
             }
         }
 
@@ -122,7 +121,7 @@ namespace Asteroids.Field
 
         private void UpdateImmuneOnDamageTimer()
         {
-            _immuneTimer = Math.Max(_immuneTimer, _immuneOnDamageTimeInSeconds);
+            _immuneTimer = Math.Max(_immuneTimer, ImmuneOnDamageTimeInSeconds);
             OnImmuneStatusChanged?.Invoke();
         }
     }

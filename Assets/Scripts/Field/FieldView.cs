@@ -20,12 +20,11 @@ namespace Asteroids.Field
         [SerializeField] private Transform _asteroidContainer = default;
         [SerializeField] private GameObject _shipPrefab = default;
         [SerializeField] private Transform _shipSpawnPoint = default;
+        [SerializeField] private ShipParams _shipParams = default;
 
         private readonly List<AsteroidView> _asteroids = new();
 
-        private ShipView _shipView;
-
-        public ShipView ShipView => _shipView;
+        private ShipController _shipController;
 
         private float _minX;
         private float _maxX;
@@ -59,7 +58,7 @@ namespace Asteroids.Field
 
         public void Tick(float deltaTime)
         {
-            ShipView.Tick(deltaTime);
+            _shipController.Tick(deltaTime);
             foreach (var asteroidView in _asteroids)
             {
                 asteroidView.Tick(deltaTime);
@@ -67,19 +66,24 @@ namespace Asteroids.Field
             _bulletManager.Tick(deltaTime);
         }
 
-        public void SpawnShip()
+        public ShipController SpawnShip()
         {
-            _shipView = _pool.GetObject<ShipView>(_shipPrefab, transform);
-            _shipView.transform.position = _shipSpawnPoint.position;
-            _shipView.Connect(_pool, _bulletManager);
-            _model.ShipModel = _shipView.ShipModel;
+            var shipView = _pool.GetObject<ShipView>(_shipPrefab, transform);
+            shipView.transform.position = _shipSpawnPoint.transform.position;
 
-            _shipView.ShipModel.OnDeath += OnShipDeath;
+            var shipModel = new ShipModel(_shipParams);
+            _shipController = new ShipController(shipView, shipModel, _pool, _bulletManager);
+            
+            _model.ShipModel = shipModel;
+
+            shipModel.OnDeath += OnShipDeath;
+
+            return _shipController;
         }
 
         private void OnShipDeath()
         {
-            _pool.UtilizeObject(_shipView.gameObject);
+            _pool.UtilizeObject(_shipController.ShipView);
         }
 
         public void SpawnNewWave()

@@ -1,17 +1,13 @@
-﻿using Asteroids.Field;
-using UnityEngine;
-
-namespace Asteroids.Application
+﻿namespace Asteroids.Application
 {
     public class InitializeGameState : GameState
     {
         public override void Initialize()
         {
-            Context.FieldView.SpawnShip();
+            var shipController = Context.FieldView.SpawnShip();
             Context.FieldView.SpawnNewWave();
 
-            var shipView = Object.FindObjectOfType<ShipView>();
-            Context.UiView.Connect(Context.Model, shipView);
+            Context.UiView.Connect(Context.Model, shipController);
         }
 
         public override void Tick(float deltaTime)
