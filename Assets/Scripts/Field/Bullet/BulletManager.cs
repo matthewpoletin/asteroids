@@ -41,5 +41,10 @@ namespace Asteroids.Field
                 bullet.Tick(deltaTime);
             }
         }
+
+        public void Reset()
+        {
+            _bullets.Clear();
+        }
     }
 }

@@ -4,8 +4,6 @@
     {
         public override void Initialize()
         {
-
-
             Context.Model.ShipModel.OnDeath += OnShipDeath;
         }
 

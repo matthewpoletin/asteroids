@@ -4,6 +4,8 @@
     {
         public override void Initialize()
         {
+            Context.FieldView.Reset();
+
             var shipController = Context.FieldView.SpawnShip();
             Context.FieldView.SpawnNewWave();
 

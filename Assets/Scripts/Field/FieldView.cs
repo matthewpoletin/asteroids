@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -165,6 +164,28 @@ namespace Asteroids.Field
             _saucers.Remove(saucerController);
             BoundsController.RemoveFieldEntity(saucerController);
             _pool.UtilizeObject(saucerController.SaucerView);
+        }
+
+        public void Reset()
+        {
+            for (var index = _asteroids.Count - 1; index >= 0; index--)
+            {
+                var asteroidController = _asteroids[index];
+                DestroyAsteroid(asteroidController);
+            }
+
+            _asteroids.Clear();
+
+            for (var index = _saucers.Count - 1; index >= 0; index--)
+            {
+                var saucerController = _saucers[index];
+                DestroySaucer(saucerController);
+            }
+
+            _saucers.Clear();
+
+            BoundsController.Reset();
+            _bulletManager.Reset();
         }
     }
 }

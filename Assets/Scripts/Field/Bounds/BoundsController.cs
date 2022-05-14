@@ -89,5 +89,10 @@ namespace Asteroids.Field
         {
             return new Vector2(Random.Range(_minX, _maxX), Random.Range(_minY, _maxY));
         }
+
+        public void Reset()
+        {
+            _fieldEntities.Clear();
+        }
     }
 }
