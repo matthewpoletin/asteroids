@@ -15,15 +15,19 @@ namespace Asteroids.Field
     public class FieldView : MonoBehaviour, ITick
     {
         private const int ASTEROID_SPAWN_COUNT = 5;
+        private const int SAUCER_SPAWN_COUNT = 1;
 
         [SerializeField] private GameObject _asteroidPrefab = default;
         [SerializeField] private Transform _asteroidContainer = default;
         [SerializeField] private GameObject _shipPrefab = default;
         [SerializeField] private Transform _shipSpawnPoint = default;
+        [SerializeField] private GameObject _saucerPrefab = default;
         [SerializeField] private ShipParams _shipParams = default;
         [SerializeField] private AsteroidParams _asteroidParams;
+        [SerializeField] private SaucerParams _saucerParams;
 
         private readonly List<AsteroidController> _asteroids = new();
+        private readonly List<SaucerController> _saucers = new();
 
         private ShipController _shipController;
 
@@ -60,9 +64,14 @@ namespace Asteroids.Field
         public void Tick(float deltaTime)
         {
             _shipController.Tick(deltaTime);
-            foreach (var asteroidView in _asteroids)
+            foreach (var asteroidController in _asteroids)
             {
-                asteroidView.Tick(deltaTime);
+                asteroidController.Tick(deltaTime);
+            }
+
+            foreach (var saucerController in _saucers)
+            {
+                saucerController.Tick(deltaTime);
             }
 
             _bulletManager.Tick(deltaTime);
@@ -98,6 +107,12 @@ namespace Asteroids.Field
                 var spawnPosition = new Vector2(Random.Range(_minX, _maxX), Random.Range(_minY, _maxY));
                 var dirVector = new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f)).normalized;
                 SpawnAsteroid(spawnPosition, dirVector, AsteroidSize.Large);
+            }
+
+            for (var i = 0; i < SAUCER_SPAWN_COUNT; i++)
+            {
+                var spawnPosition = new Vector2(Random.Range(_minX, _maxX), Random.Range(_minY, _maxY));
+                SpawnSaucer(spawnPosition);
             }
         }
 
@@ -140,6 +155,25 @@ namespace Asteroids.Field
         {
             asteroidController.Utilize();
             _asteroids.Remove(asteroidController);
+        }
+
+        private void SpawnSaucer(Vector2 position)
+        {
+            var saucerView = _pool.GetObject<SaucerView>(_saucerPrefab, transform);
+            saucerView.transform.position = position;
+            var saucerController = new SaucerController(saucerView, _saucerParams, _shipController);
+            _saucers.Add(saucerController);
+        }
+
+        public SaucerController GetSaucerController(SaucerView saucerView)
+        {
+            return _saucers.FirstOrDefault(controller => controller.SaucerView == saucerView);
+        }
+
+        public void DestroySaucer(SaucerController saucerController)
+        {
+            _saucers.Remove(saucerController);
+            _pool.UtilizeObject(saucerController.SaucerView);
         }
     }
 }

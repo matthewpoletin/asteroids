@@ -45,6 +45,14 @@ namespace Asteroids.Field
 
                 DestroyBullet();
             }
+
+            if (other.TryGetComponent<SaucerView>(out var saucerView))
+            {
+                var saucerController = _fieldView.GetSaucerController(saucerView);
+                _fieldView.DestroySaucer(saucerController);
+
+                DestroyBullet();
+            }
         }
 
         private void DestroyBullet()

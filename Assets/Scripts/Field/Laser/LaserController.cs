@@ -58,6 +58,12 @@ namespace Asteroids.Field
                 var asteroidController = _fieldView.GetAsteroidController(asteroidView);
                 _fieldView.DestroyAsteroid(asteroidController);
             }
+
+            if (other.TryGetComponent<SaucerView>(out var saucerView))
+            {
+                var asteroidController = _fieldView.GetSaucerController(saucerView);
+                _fieldView.DestroySaucer(asteroidController);
+            }
         }
     }
 }
