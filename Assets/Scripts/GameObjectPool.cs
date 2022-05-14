@@ -14,7 +14,7 @@ namespace Asteroids
         {
             _utilizationContainer = utilizationContainer != null
                 ? utilizationContainer
-                : new GameObject(nameof(GetType)).transform;
+                : new GameObject(nameof(GameObjectPool)).transform;
             UnityEngine.Object.DontDestroyOnLoad(_utilizationContainer);
         }
 
