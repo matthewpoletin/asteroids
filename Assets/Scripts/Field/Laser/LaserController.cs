@@ -6,6 +6,8 @@ namespace Asteroids.Field
     public class LaserController : ITick
     {
         private readonly GameObjectPool _pool;
+
+        private readonly FieldView _fieldView;
         private readonly Transform _followTransform;
         private readonly Action<LaserController> _onDeathCallback;
 
@@ -14,10 +16,12 @@ namespace Asteroids.Field
         private LaserView LaserView { get; }
 
         public LaserController(GameObjectPool pool, GameObject laserPrefab, Transform followTransform,
+            FieldView fieldView,
             Action<LaserController> onDeathCallback,
             float lifetimeDurationInSeconds)
         {
             _pool = pool;
+            _fieldView = fieldView;
             _followTransform = followTransform;
             _onDeathCallback = onDeathCallback;
 
@@ -49,9 +53,10 @@ namespace Asteroids.Field
 
         private void OnTriggerEnter(Collider2D other)
         {
-            if (other.TryGetComponent<IReceivingDamage>(out var target))
+            if (other.TryGetComponent<AsteroidView>(out var asteroidView))
             {
-                target.Kill();
+                var asteroidController = _fieldView.GetAsteroidController(asteroidView);
+                _fieldView.DestroyAsteroid(asteroidController);
             }
         }
     }

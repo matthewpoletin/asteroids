@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -6,7 +7,6 @@ namespace Asteroids.Field
 {
     public enum AsteroidSize
     {
-        Dead = 0,
         Small = 1,
         Medium = 2,
         Large = 3,
@@ -14,15 +14,16 @@ namespace Asteroids.Field
 
     public class FieldView : MonoBehaviour, ITick
     {
-        private const int ASTEROID_SPAWN_COUNT = 1;
+        private const int ASTEROID_SPAWN_COUNT = 5;
 
         [SerializeField] private GameObject _asteroidPrefab = default;
         [SerializeField] private Transform _asteroidContainer = default;
         [SerializeField] private GameObject _shipPrefab = default;
         [SerializeField] private Transform _shipSpawnPoint = default;
         [SerializeField] private ShipParams _shipParams = default;
+        [SerializeField] private AsteroidParams _asteroidParams;
 
-        private readonly List<AsteroidView> _asteroids = new();
+        private readonly List<AsteroidController> _asteroids = new();
 
         private ShipController _shipController;
 
@@ -53,7 +54,7 @@ namespace Asteroids.Field
             _pool = pool;
             _model = model;
 
-            _bulletManager = new BulletManager(pool, transform);
+            _bulletManager = new BulletManager(pool, this, transform);
         }
 
         public void Tick(float deltaTime)
@@ -63,6 +64,7 @@ namespace Asteroids.Field
             {
                 asteroidView.Tick(deltaTime);
             }
+
             _bulletManager.Tick(deltaTime);
         }
 
@@ -72,8 +74,8 @@ namespace Asteroids.Field
             shipView.transform.position = _shipSpawnPoint.transform.position;
 
             var shipModel = new ShipModel(_shipParams);
-            _shipController = new ShipController(shipView, shipModel, _pool, _bulletManager);
-            
+            _shipController = new ShipController(shipView, shipModel, _pool, this, _bulletManager);
+
             _model.ShipModel = shipModel;
 
             shipModel.OnDeath += OnShipDeath;
@@ -83,6 +85,9 @@ namespace Asteroids.Field
 
         private void OnShipDeath()
         {
+            _model.ShipModel.OnDeath -= OnShipDeath;
+            _model.ShipModel = null;
+
             _pool.UtilizeObject(_shipController.ShipView);
         }
 
@@ -98,26 +103,43 @@ namespace Asteroids.Field
 
         private void SpawnAsteroid(Vector2 spawnPosition, Vector2 movementDirection, AsteroidSize asteroidSize)
         {
-            var asteroidView = _pool.GetObject<AsteroidView>(_asteroidPrefab, _asteroidContainer);
-            asteroidView.transform.position = spawnPosition;
-            asteroidView.Connect(_pool , asteroidSize, movementDirection, OnAsteroidDeath);
-            _asteroids.Add(asteroidView);
+            var asteroidController = new AsteroidController(_pool, _asteroidPrefab, _asteroidContainer, asteroidSize,
+                movementDirection, spawnPosition, _asteroidParams);
+            _asteroids.Add(asteroidController);
         }
 
-        private void OnAsteroidDeath(AsteroidView asteroidView)
+        public AsteroidController GetAsteroidController(AsteroidView asteroidView)
         {
-            var oldSize = asteroidView.AsteroidSize;
-            var position = asteroidView.transform.position;
-            var newSize = (AsteroidSize)((int)oldSize - 1);
-            if (newSize != AsteroidSize.Dead)
+            return _asteroids.FirstOrDefault(controller => controller.AsteroidView == asteroidView);
+        }
+
+        private void OnAsteroidDeath(AsteroidController asteroidController)
+        {
+            asteroidController.Utilize();
+            _asteroids.Remove(asteroidController);
+            _pool.UtilizeObject(asteroidController.AsteroidView);
+        }
+
+        public void SplitOrDestroyAsteroid(AsteroidController asteroidController)
+        {
+            var oldSize = asteroidController.AsteroidSize;
+            var position = asteroidController.AsteroidView.transform.position;
+            if (oldSize != AsteroidSize.Small)
             {
+                var newSize = (AsteroidSize)((int)oldSize - 1);
                 const float offset = 0.5f;
                 var dirVector = new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f)).normalized;
                 SpawnAsteroid((Vector2)position + dirVector * offset, dirVector, newSize);
                 SpawnAsteroid((Vector2)position + dirVector * -offset, -dirVector, newSize);
             }
 
-            _pool.UtilizeObject(asteroidView.gameObject);
+            OnAsteroidDeath(asteroidController);
+        }
+
+        public void DestroyAsteroid(AsteroidController asteroidController)
+        {
+            asteroidController.Utilize();
+            _asteroids.Remove(asteroidController);
         }
     }
 }

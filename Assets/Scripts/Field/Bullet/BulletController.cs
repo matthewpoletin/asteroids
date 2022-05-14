@@ -6,11 +6,18 @@ namespace Asteroids.Field
     public class BulletController : ITick
     {
         private readonly Action<BulletController> _onBulletDeath;
+        private readonly FieldView _fieldView;
+
         public BulletView BulletView { get; }
 
-        public BulletController(BulletView bulletView, Action<BulletController> onBulletDeath)
+        private Transform Transform => BulletView.transform;
+
+        public BulletController(BulletView bulletView, FieldView fieldView, Action<BulletController> onBulletDeath)
         {
             BulletView = bulletView;
+
+            _fieldView = fieldView;
+
             _onBulletDeath = onBulletDeath;
 
             BulletView.Connect(OnTriggerEnter, OnTriggerExit);
@@ -18,25 +25,31 @@ namespace Asteroids.Field
 
         public void Tick(float deltaTime)
         {
-            BulletView.transform.position += BulletView.transform.up * (BulletView.Speed * deltaTime);
+            Transform.position += BulletView.transform.up * (BulletView.Speed * deltaTime);
         }
 
         private void OnTriggerExit(Collider2D other)
         {
             if (other.TryGetComponent<BoundsController>(out _))
             {
-                _onBulletDeath.Invoke(this);
+                DestroyBullet();
             }
         }
 
         private void OnTriggerEnter(Collider2D other)
         {
-            if (other.TryGetComponent<IReceivingDamage>(out var target))
+            if (other.TryGetComponent<AsteroidView>(out var asteroidView))
             {
-                target.ReceiveDamage();
+                var asteroidController = _fieldView.GetAsteroidController(asteroidView);
+                _fieldView.SplitOrDestroyAsteroid(asteroidController);
 
-                _onBulletDeath.Invoke(this);
+                DestroyBullet();
             }
+        }
+
+        private void DestroyBullet()
+        {
+            _onBulletDeath.Invoke(this);
         }
     }
 }

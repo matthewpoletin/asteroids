@@ -7,6 +7,7 @@ namespace Asteroids.Field
     {
         private readonly GameObjectPool _pool;
         private readonly BulletManager _bulletManager;
+        private readonly FieldView _fieldView;
         private readonly ShipControls _shipControls;
 
         private LaserController _laserController;
@@ -19,12 +20,13 @@ namespace Asteroids.Field
 
         private ShipParams Params => ShipModel.Params;
 
-        public ShipController(ShipView shipView, ShipModel model, GameObjectPool pool, BulletManager bulletManager)
+        public ShipController(ShipView shipView, ShipModel model, GameObjectPool pool, FieldView fieldView, BulletManager bulletManager)
         {
             ShipView = shipView;
             ShipModel = model;
 
             _pool = pool;
+            _fieldView = fieldView;
             _bulletManager = bulletManager;
 
             _shipControls = new ShipControls();
@@ -111,8 +113,7 @@ namespace Asteroids.Field
                 ShipModel.LaserAmmoCount--;
 
                 _laserController = new LaserController(_pool, ShipView.LaserPrefab, ShipView.MuzzlePlaceholder,
-                    OnLaserComplete,
-                    ShipModel.Params.LaserLifeTimeSeconds);
+                    _fieldView, OnLaserComplete, ShipModel.Params.LaserLifeTimeSeconds);
             }
         }
 
