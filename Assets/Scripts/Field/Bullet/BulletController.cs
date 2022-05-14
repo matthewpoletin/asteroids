@@ -3,14 +3,14 @@ using UnityEngine;
 
 namespace Asteroids.Field
 {
-    public class BulletController : ITick
+    public class BulletController : IDestroyedFieldActor, ITick
     {
         private readonly Action<BulletController> _onBulletDeath;
         private readonly FieldView _fieldView;
 
         public BulletView BulletView { get; }
 
-        private Transform Transform => BulletView.transform;
+        public Transform Transform => BulletView.transform;
 
         public BulletController(BulletView bulletView, FieldView fieldView, Action<BulletController> onBulletDeath)
         {
@@ -20,7 +20,7 @@ namespace Asteroids.Field
 
             _onBulletDeath = onBulletDeath;
 
-            BulletView.Connect(OnTriggerEnter, OnTriggerExit);
+            BulletView.Connect(OnTriggerEnter);
         }
 
         public void Tick(float deltaTime)
@@ -28,12 +28,9 @@ namespace Asteroids.Field
             Transform.position += BulletView.transform.up * (BulletView.Speed * deltaTime);
         }
 
-        private void OnTriggerExit(Collider2D other)
+        public void OnLeavingBounds()
         {
-            if (other.TryGetComponent<BoundsController>(out _))
-            {
-                DestroyBullet();
-            }
+            DestroyBullet();
         }
 
         private void OnTriggerEnter(Collider2D other)

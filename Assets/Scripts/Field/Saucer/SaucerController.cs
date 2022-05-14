@@ -2,10 +2,12 @@
 
 namespace Asteroids.Field
 {
-    public class SaucerController : ITick
+    public class SaucerController : IFieldActor, ITick
     {
         private readonly SaucerBrain _saucerBrain;
         private readonly SaucerMover _saucerMover;
+
+        public Transform Transform => SaucerView.transform;
 
         public SaucerView SaucerView { get; }
 
@@ -22,6 +24,10 @@ namespace Asteroids.Field
         {
             _saucerBrain.Tick(deltaTime);
             _saucerMover.PerformMovement(deltaTime, _saucerBrain.MovementDirection);
+        }
+
+        public void OnLeavingBounds()
+        {
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -31,39 +32,24 @@ namespace Asteroids.Field
 
         private ShipController _shipController;
 
-        private float _minX;
-        private float _maxX;
-        private float _minY;
-        private float _maxY;
+        public BoundsController BoundsController { get; private set; }
 
         private BulletManager _bulletManager;
         private GameObjectPool _pool;
         private Model _model;
-
-        private void Awake()
-        {
-            var mainCamera = Camera.main;
-            var orthographicHeight = mainCamera.orthographicSize;
-            var orthographicWidth = orthographicHeight / mainCamera.pixelHeight * mainCamera.pixelWidth;
-
-            var position = mainCamera.transform.position;
-            _minX = position.x - orthographicWidth;
-            _maxX = position.x + orthographicWidth;
-            _minY = position.y - orthographicHeight;
-            _maxY = position.y + orthographicHeight;
-        }
 
         public void Connect(GameObjectPool pool, Model model)
         {
             _pool = pool;
             _model = model;
 
+            BoundsController = new BoundsController();
             _bulletManager = new BulletManager(pool, this, transform);
         }
 
         public void Tick(float deltaTime)
         {
-            _shipController.Tick(deltaTime);
+            _shipController?.Tick(deltaTime);
             foreach (var asteroidController in _asteroids)
             {
                 asteroidController.Tick(deltaTime);
@@ -75,6 +61,8 @@ namespace Asteroids.Field
             }
 
             _bulletManager.Tick(deltaTime);
+
+            BoundsController.ValidateEntitiesPositions();
         }
 
         public ShipController SpawnShip()
@@ -89,6 +77,8 @@ namespace Asteroids.Field
 
             shipModel.OnDeath += OnShipDeath;
 
+            BoundsController.AddFieldEntity(_shipController);
+
             return _shipController;
         }
 
@@ -98,20 +88,24 @@ namespace Asteroids.Field
             _model.ShipModel = null;
 
             _pool.UtilizeObject(_shipController.ShipView);
+
+            _shipController = null;
+
+            BoundsController.RemoveFieldEntity(_shipController);
         }
 
         public void SpawnNewWave()
         {
             for (var i = 0; i < ASTEROID_SPAWN_COUNT; i++)
             {
-                var spawnPosition = new Vector2(Random.Range(_minX, _maxX), Random.Range(_minY, _maxY));
+                var spawnPosition = BoundsController.GetSpawnPosition();
                 var dirVector = new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f)).normalized;
                 SpawnAsteroid(spawnPosition, dirVector, AsteroidSize.Large);
             }
 
             for (var i = 0; i < SAUCER_SPAWN_COUNT; i++)
             {
-                var spawnPosition = new Vector2(Random.Range(_minX, _maxX), Random.Range(_minY, _maxY));
+                var spawnPosition = BoundsController.GetSpawnPosition();
                 SpawnSaucer(spawnPosition);
             }
         }
@@ -121,6 +115,7 @@ namespace Asteroids.Field
             var asteroidController = new AsteroidController(_pool, _asteroidPrefab, _asteroidContainer, asteroidSize,
                 movementDirection, spawnPosition, _asteroidParams);
             _asteroids.Add(asteroidController);
+            BoundsController.AddFieldEntity(asteroidController);
         }
 
         public AsteroidController GetAsteroidController(AsteroidView asteroidView)
@@ -128,11 +123,11 @@ namespace Asteroids.Field
             return _asteroids.FirstOrDefault(controller => controller.AsteroidView == asteroidView);
         }
 
-        private void OnAsteroidDeath(AsteroidController asteroidController)
+        public void DestroyAsteroid(AsteroidController asteroidController)
         {
             asteroidController.Utilize();
             _asteroids.Remove(asteroidController);
-            _pool.UtilizeObject(asteroidController.AsteroidView);
+            BoundsController.RemoveFieldEntity(asteroidController);
         }
 
         public void SplitOrDestroyAsteroid(AsteroidController asteroidController)
@@ -148,13 +143,7 @@ namespace Asteroids.Field
                 SpawnAsteroid((Vector2)position + dirVector * -offset, -dirVector, newSize);
             }
 
-            OnAsteroidDeath(asteroidController);
-        }
-
-        public void DestroyAsteroid(AsteroidController asteroidController)
-        {
-            asteroidController.Utilize();
-            _asteroids.Remove(asteroidController);
+            DestroyAsteroid(asteroidController);
         }
 
         private void SpawnSaucer(Vector2 position)
@@ -163,6 +152,7 @@ namespace Asteroids.Field
             saucerView.transform.position = position;
             var saucerController = new SaucerController(saucerView, _saucerParams, _shipController);
             _saucers.Add(saucerController);
+            BoundsController.AddFieldEntity(saucerController);
         }
 
         public SaucerController GetSaucerController(SaucerView saucerView)
@@ -173,6 +163,7 @@ namespace Asteroids.Field
         public void DestroySaucer(SaucerController saucerController)
         {
             _saucers.Remove(saucerController);
+            BoundsController.RemoveFieldEntity(saucerController);
             _pool.UtilizeObject(saucerController.SaucerView);
         }
     }

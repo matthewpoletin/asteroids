@@ -24,11 +24,13 @@ namespace Asteroids.Field
             bulletView.transform.SetPositionAndRotation(worldPosition, rotation);
             var bulletController = new BulletController(bulletView, _fieldView, OnBulletDeath);
             _bullets.Add(bulletController);
+            _fieldView.BoundsController.AddFieldEntity(bulletController);
         }
 
         private void OnBulletDeath(BulletController bulletController)
         {
             _bullets.Remove(bulletController);
+            _fieldView.BoundsController.RemoveFieldEntity(bulletController);
             _pool.UtilizeObject(bulletController.BulletView);
         }
 

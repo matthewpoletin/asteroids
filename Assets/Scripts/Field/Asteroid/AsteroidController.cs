@@ -2,7 +2,7 @@
 
 namespace Asteroids.Field
 {
-    public class AsteroidController : ITick
+    public class AsteroidController : ITick, IFieldActor
     {
         private readonly GameObjectPool _pool;
         private readonly AsteroidParams _asteroidParams;
@@ -39,6 +39,12 @@ namespace Asteroids.Field
         public void Utilize()
         {
             _pool.UtilizeObject(AsteroidView);
+        }
+
+        public Transform Transform => AsteroidView.transform;
+
+        public void OnLeavingBounds()
+        {
         }
     }
 }

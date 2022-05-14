@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Asteroids.Field
 {
-    public class ShipController : ITick
+    public class ShipController : IFieldActor, ITick
     {
         private readonly GameObjectPool _pool;
         private readonly BulletManager _bulletManager;
@@ -17,6 +17,8 @@ namespace Asteroids.Field
 
         public ShipView ShipView { get; }
         public ShipModel ShipModel { get; }
+
+        public Transform Transform => ShipView.transform;
 
         private ShipParams Params => ShipModel.Params;
 
@@ -98,6 +100,10 @@ namespace Asteroids.Field
             {
                 ShipModel.ReceiveDamage();
             }
+        }
+
+        public void OnLeavingBounds()
+        {
         }
 
         private void ShootCannon()
