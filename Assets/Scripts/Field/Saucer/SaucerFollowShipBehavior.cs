@@ -5,9 +5,14 @@ using UnityEngine;
 
 namespace Asteroids.Field
 {
-    public class SaucerBrain : ITick
+    public interface ISaucerBehavior : ITick
     {
-        private readonly SaucerView _saucerView;
+        Vector2 MovementDirection { get; }
+    }
+
+    public class SaucerFollowShipBehavior : ISaucerBehavior
+    {
+        private readonly Transform _transform;
         private readonly ShipController _shipController;
 
         private readonly Func<float> _getDirectionChangeDelay;
@@ -17,17 +22,23 @@ namespace Asteroids.Field
         private readonly float _fieldWidth;
         private readonly float _fieldHeight;
 
-        private Vector2 SaucerPosition => _saucerView.transform.position;
+        private Vector2 SaucerPosition => _transform.transform.position;
 
         public Vector2 MovementDirection { get; private set; }
 
-        public SaucerBrain(ShipController shipController, SaucerView saucerView, SaucerParams saucerParams)
+        public SaucerFollowShipBehavior(Transform transform, ShipController shipController, SaucerParams saucerParams)
         {
-            _saucerView = saucerView;
+            _transform = transform;
             _shipController = shipController;
             _getDirectionChangeDelay = () => saucerParams.MovementDirectionChangeDelaySeconds;
 
             var mainCamera = Camera.main;
+            if (mainCamera == null)
+            {
+                Debug.LogError("Main Camera was not found");
+                return;
+            }
+
             _fieldHeight = 2 * mainCamera.orthographicSize;
             _fieldWidth = _fieldHeight / mainCamera.pixelHeight * mainCamera.pixelWidth;
 

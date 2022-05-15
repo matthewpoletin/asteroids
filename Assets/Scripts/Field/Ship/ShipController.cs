@@ -96,14 +96,10 @@ namespace Asteroids.Field
 
         private void OnTriggerEnter(Collider2D other)
         {
-            if (other.TryGetComponent<AsteroidView>(out _))
+            if (other.TryGetComponent<IShipDamagingView>(out _))
             {
-                ShipModel.ReceiveDamage();
+                ShipModel.ReceiveCollisionDamage();
             }
-        }
-
-        public void OnLeavingBounds()
-        {
         }
 
         private void ShootCannon()

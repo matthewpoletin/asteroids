@@ -25,7 +25,6 @@ namespace Asteroids.Field
         public float MaxSpeed => _maxSpeed;
         public float SteerSpeed => _steerSpeed;
 
-
         public float LaserAmmoResetTimeInSeconds => _laserAmmoResetTimeInSeconds;
         public int MaxLaserAmmoCount => _maxLaserAmmoCount;
         public float LaserLifeTimeSeconds => _laserLifeTimeSeconds;

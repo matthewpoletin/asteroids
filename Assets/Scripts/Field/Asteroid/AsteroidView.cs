@@ -4,7 +4,7 @@ using Random = UnityEngine.Random;
 
 namespace Asteroids.Field
 {
-    public class AsteroidView : MonoBehaviour
+    public class AsteroidView : MonoBehaviour, IShipDamagingView
     {
         [SerializeField] private SpriteRenderer _spriteRenderer = default;
         [SerializeField] private List<Sprite> _smallSprites = default;

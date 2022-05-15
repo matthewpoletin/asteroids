@@ -2,7 +2,7 @@
 
 namespace Asteroids.Field
 {
-    public class SaucerView : MonoBehaviour
+    public class SaucerView : MonoBehaviour, IShipDamagingView
     {
     }
 }

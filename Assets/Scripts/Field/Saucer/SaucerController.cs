@@ -4,8 +4,8 @@ namespace Asteroids.Field
 {
     public class SaucerController : IFieldActor, ITick
     {
-        private readonly SaucerBrain _saucerBrain;
-        private readonly SaucerMover _saucerMover;
+        private readonly ISaucerBehavior _saucerFollowShipBehavior;
+        private readonly ISaucerMover _saucerMover;
 
         public Transform Transform => SaucerView.transform;
 
@@ -15,19 +15,15 @@ namespace Asteroids.Field
         {
             SaucerView = saucerView;
 
-            // TODO: Set position change delay from outside
-            _saucerBrain = new SaucerBrain(shipController, SaucerView, saucerParams);
-            _saucerMover = new SaucerMover(SaucerView.transform, saucerParams);
+            var transform = SaucerView.transform;
+            _saucerFollowShipBehavior = new SaucerFollowShipBehavior(transform, shipController, saucerParams);
+            _saucerMover = new SaucerMover(transform, saucerParams);
         }
 
         public void Tick(float deltaTime)
         {
-            _saucerBrain.Tick(deltaTime);
-            _saucerMover.PerformMovement(deltaTime, _saucerBrain.MovementDirection);
-        }
-
-        public void OnLeavingBounds()
-        {
+            _saucerFollowShipBehavior.Tick(deltaTime);
+            _saucerMover.PerformMovement(deltaTime, _saucerFollowShipBehavior.MovementDirection);
         }
     }
 }

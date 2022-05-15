@@ -2,7 +2,7 @@
 
 namespace Asteroids.Field
 {
-    public class SaucerMover
+    public class SaucerMover : ISaucerMover
     {
         private readonly Transform _transform;
         private readonly SaucerParams _saucerParams;

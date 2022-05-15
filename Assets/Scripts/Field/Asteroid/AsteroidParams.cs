@@ -5,6 +5,13 @@ using UnityEngine;
 
 namespace Asteroids.Field
 {
+    public enum AsteroidSize
+    {
+        Small = 1,
+        Medium = 2,
+        Large = 3,
+    }
+
     [CreateAssetMenu(fileName = "asteroid_params", menuName = "Params/AsteroidParams", order = 2)]
     public class AsteroidParams : ScriptableObject
     {

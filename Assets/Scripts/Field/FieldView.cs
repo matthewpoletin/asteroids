@@ -2,13 +2,6 @@ using UnityEngine;
 
 namespace Asteroids.Field
 {
-    public enum AsteroidSize
-    {
-        Small = 1,
-        Medium = 2,
-        Large = 3,
-    }
-
     public class FieldView : MonoBehaviour
     {
         [SerializeField] private GameObject _asteroidPrefab = default;

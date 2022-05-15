@@ -13,6 +13,7 @@ namespace Asteroids.Field
         private readonly AsteroidSize _asteroidSize;
 
         public AsteroidSize AsteroidSize => _asteroidSize;
+        public Transform Transform => AsteroidView.transform;
 
         public AsteroidView AsteroidView { get; }
 
@@ -39,12 +40,6 @@ namespace Asteroids.Field
         public void Utilize()
         {
             _pool.UtilizeObject(AsteroidView);
-        }
-
-        public Transform Transform => AsteroidView.transform;
-
-        public void OnLeavingBounds()
-        {
         }
     }
 }

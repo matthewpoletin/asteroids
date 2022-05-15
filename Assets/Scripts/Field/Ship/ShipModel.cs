@@ -109,7 +109,7 @@ namespace Asteroids.Field
             return _laserAmmoCount > 0;
         }
 
-        public void ReceiveDamage()
+        public void ReceiveCollisionDamage()
         {
             if (_immuneTimer > 0)
             {

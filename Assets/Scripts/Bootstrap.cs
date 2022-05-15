@@ -9,7 +9,11 @@ namespace Asteroids
         {
             var gameObjectPool = new GameObjectPool();
 
-            new BattleModule().Connect(gameObjectPool);
+            var applicationTicker = new GameObject(nameof(ApplicationTicker))
+                .AddComponent<ApplicationTicker>();
+            Object.DontDestroyOnLoad(applicationTicker);
+
+            new Game().Connect(gameObjectPool, applicationTicker);
         }
     }
 }

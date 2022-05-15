@@ -5,16 +5,11 @@ namespace Asteroids
 {
     public class ApplicationTicker : MonoBehaviour
     {
-        private Action<float> _onTick;
-
-        public void Connect(Action<float> onTick)
-        {
-            _onTick = onTick;
-        }
+        public event Action<float> OnTick;
 
         private void Update()
         {
-            _onTick?.Invoke(Time.deltaTime);
+            OnTick?.Invoke(Time.deltaTime);
         }
     }
 }

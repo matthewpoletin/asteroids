@@ -3,7 +3,7 @@ using Asteroids.Field;
 
 namespace Asteroids
 {
-    public class Model
+    public class Model : ITick
     {
         private int _userScore = 1;
         public event Action<int> OnUserScoreChanged;
@@ -19,5 +19,10 @@ namespace Asteroids
         }
 
         public ShipModel ShipModel { get; set; }
+
+        public void Tick(float deltaTime)
+        {
+            ShipModel?.Tick(deltaTime);
+        }
     }
 }

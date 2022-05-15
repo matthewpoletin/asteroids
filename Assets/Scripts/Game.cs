@@ -5,27 +5,25 @@ using UnityEngine;
 
 namespace Asteroids
 {
-    // TODO: Rename to Game/Application/GameController
-    public class BattleModule
+    public class Game
     {
         private GameContext _gameContext;
         private FieldController _fieldController;
 
-        public void Connect(GameObjectPool pool)
-        {
-            // TODO: Move ApplicationTicker to bootstrap
-            new GameObject(nameof(ApplicationTicker))
-                .AddComponent<ApplicationTicker>()
-                .Connect(Tick);
+        private Model _model;
 
-            var model = new Model();
+        public void Connect(GameObjectPool pool, ApplicationTicker applicationTicker)
+        {
+            applicationTicker.OnTick += Tick;
+
+            _model = new Model();
 
             var fieldView = Object.FindObjectOfType<FieldView>();
-            _fieldController = new FieldController(fieldView, pool, model);
+            _fieldController = new FieldController(fieldView, pool, _model);
 
             var battleModuleView = Object.FindObjectOfType<BattleModuleView>();
 
-            _gameContext = new GameContext(battleModuleView, model, _fieldController);
+            _gameContext = new GameContext(battleModuleView, _model, _fieldController);
 
             var initialGameState = new InitializeGameState();
             _gameContext.ChangeState(initialGameState);
@@ -34,7 +32,7 @@ namespace Asteroids
         private void Tick(float deltaTime)
         {
             _gameContext.Tick(deltaTime);
-
+            _model.Tick(deltaTime);
             _fieldController.Tick(deltaTime);
         }
     }
