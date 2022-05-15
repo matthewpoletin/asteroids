@@ -1,7 +1,10 @@
-﻿using Asteroids.Application;
+﻿using Asteroids.Core;
+using Asteroids.Core.Core;
 using Asteroids.Field;
+using Asteroids.GameState;
 using Asteroids.UI;
 using UnityEngine;
+using Utils;
 
 namespace Asteroids
 {

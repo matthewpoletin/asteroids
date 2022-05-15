@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Asteroids.Field
+﻿namespace Asteroids.Field
 {
 
 }

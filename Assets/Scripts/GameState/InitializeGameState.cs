@@ -1,4 +1,4 @@
-﻿namespace Asteroids.Application
+﻿namespace Asteroids.GameState
 {
     public class InitializeGameState : GameState
     {

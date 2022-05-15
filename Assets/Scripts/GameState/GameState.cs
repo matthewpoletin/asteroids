@@ -1,4 +1,6 @@
-﻿namespace Asteroids.Application
+﻿using Asteroids.Core.Core;
+
+namespace Asteroids.GameState
 {
     public abstract class GameState : LifecycleItem
     {

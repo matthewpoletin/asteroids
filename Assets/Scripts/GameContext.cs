@@ -1,4 +1,4 @@
-﻿using Asteroids.Application;
+﻿using Asteroids.Core.Core;
 using Asteroids.Field;
 using Asteroids.UI;
 
@@ -6,7 +6,7 @@ namespace Asteroids
 {
     public class GameContext : LifecycleItem
     {
-        private GameState _currentState;
+        private GameState.GameState _currentState;
 
         public BattleModuleView UiView { get; }
         public Model Model { get; }
@@ -19,7 +19,7 @@ namespace Asteroids
             FieldController = fieldController;
         }
 
-        public void ChangeState(GameState state)
+        public void ChangeState(GameState.GameState state)
         {
             _currentState?.Dispose();
 

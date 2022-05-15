@@ -1,6 +1,6 @@
 ﻿using UnityEngine.InputSystem;
 
-namespace Asteroids.Application
+namespace Asteroids.GameState
 {
     public class ShowResultGameState : GameState
     {

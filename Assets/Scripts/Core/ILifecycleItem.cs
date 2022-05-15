@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Asteroids
+namespace Asteroids.Core.Core
 {
     public abstract class LifecycleItem : ITick, IDisposable
     {

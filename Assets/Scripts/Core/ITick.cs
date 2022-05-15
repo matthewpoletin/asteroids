@@ -1,4 +1,4 @@
-﻿namespace Asteroids
+﻿namespace Asteroids.Core.Core
 {
     public interface ITick
     {

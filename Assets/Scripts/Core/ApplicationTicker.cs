@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Asteroids
+namespace Asteroids.Core
 {
     public class ApplicationTicker : MonoBehaviour
     {

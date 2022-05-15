@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Asteroids
+namespace Utils
 {
     public class GameObjectPool
     {
