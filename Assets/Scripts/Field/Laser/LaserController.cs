@@ -7,7 +7,7 @@ namespace Asteroids.Field
     {
         private readonly GameObjectPool _pool;
 
-        private readonly FieldView _fieldView;
+        private readonly FieldController _fieldController;
         private readonly Transform _followTransform;
         private readonly Action<LaserController> _onDeathCallback;
 
@@ -16,12 +16,12 @@ namespace Asteroids.Field
         private LaserView LaserView { get; }
 
         public LaserController(GameObjectPool pool, GameObject laserPrefab, Transform followTransform,
-            FieldView fieldView,
+            FieldController fieldController,
             Action<LaserController> onDeathCallback,
             float lifetimeDurationInSeconds)
         {
             _pool = pool;
-            _fieldView = fieldView;
+            _fieldController = fieldController;
             _followTransform = followTransform;
             _onDeathCallback = onDeathCallback;
 
@@ -55,14 +55,14 @@ namespace Asteroids.Field
         {
             if (other.TryGetComponent<AsteroidView>(out var asteroidView))
             {
-                var asteroidController = _fieldView.GetAsteroidController(asteroidView);
-                _fieldView.DestroyAsteroid(asteroidController);
+                var asteroidController = _fieldController.GetAsteroidController(asteroidView);
+                _fieldController.DestroyAsteroid(asteroidController);
             }
 
             if (other.TryGetComponent<SaucerView>(out var saucerView))
             {
-                var asteroidController = _fieldView.GetSaucerController(saucerView);
-                _fieldView.DestroySaucer(asteroidController);
+                var asteroidController = _fieldController.GetSaucerController(saucerView);
+                _fieldController.DestroySaucer(asteroidController);
             }
         }
     }

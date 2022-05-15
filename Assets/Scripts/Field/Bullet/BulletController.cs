@@ -6,17 +6,17 @@ namespace Asteroids.Field
     public class BulletController : IDestroyedFieldActor, ITick
     {
         private readonly Action<BulletController> _onBulletDeath;
-        private readonly FieldView _fieldView;
+        private readonly FieldController _fieldController;
 
         public BulletView BulletView { get; }
 
         public Transform Transform => BulletView.transform;
 
-        public BulletController(BulletView bulletView, FieldView fieldView, Action<BulletController> onBulletDeath)
+        public BulletController(BulletView bulletView, FieldController fieldController, Action<BulletController> onBulletDeath)
         {
             BulletView = bulletView;
 
-            _fieldView = fieldView;
+            _fieldController = fieldController;
 
             _onBulletDeath = onBulletDeath;
 
@@ -37,16 +37,16 @@ namespace Asteroids.Field
         {
             if (other.TryGetComponent<AsteroidView>(out var asteroidView))
             {
-                var asteroidController = _fieldView.GetAsteroidController(asteroidView);
-                _fieldView.SplitOrDestroyAsteroid(asteroidController);
+                var asteroidController = _fieldController.GetAsteroidController(asteroidView);
+                _fieldController.SplitOrDestroyAsteroid(asteroidController);
 
                 DestroyBullet();
             }
 
             if (other.TryGetComponent<SaucerView>(out var saucerView))
             {
-                var saucerController = _fieldView.GetSaucerController(saucerView);
-                _fieldView.DestroySaucer(saucerController);
+                var saucerController = _fieldController.GetSaucerController(saucerView);
+                _fieldController.DestroySaucer(saucerController);
 
                 DestroyBullet();
             }

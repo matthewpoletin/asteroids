@@ -4,10 +4,10 @@
     {
         public override void Initialize()
         {
-            Context.FieldView.Reset();
+            Context.FieldController.Reset();
 
-            var shipController = Context.FieldView.SpawnShip();
-            Context.FieldView.SpawnNewWave();
+            var shipController = Context.FieldController.SpawnShip();
+            Context.FieldController.SpawnNewWave();
 
             Context.UiView.Connect(Context.Model, shipController);
         }

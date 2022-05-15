@@ -9,7 +9,7 @@ namespace Asteroids
     public class BattleModule
     {
         private GameContext _gameContext;
-        private FieldView _fieldView;
+        private FieldController _fieldController;
 
         public void Connect(GameObjectPool pool)
         {
@@ -20,12 +20,12 @@ namespace Asteroids
 
             var model = new Model();
 
-            _fieldView = Object.FindObjectOfType<FieldView>();
-            _fieldView.Connect(pool, model);
+            var fieldView = Object.FindObjectOfType<FieldView>();
+            _fieldController = new FieldController(fieldView, pool, model);
 
             var battleModuleView = Object.FindObjectOfType<BattleModuleView>();
 
-            _gameContext = new GameContext(battleModuleView, model, _fieldView);
+            _gameContext = new GameContext(battleModuleView, model, _fieldController);
 
             var initialGameState = new InitializeGameState();
             _gameContext.ChangeState(initialGameState);
@@ -35,7 +35,7 @@ namespace Asteroids
         {
             _gameContext.Tick(deltaTime);
 
-            _fieldView.Tick(deltaTime);
+            _fieldController.Tick(deltaTime);
         }
     }
 }

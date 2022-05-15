@@ -10,13 +10,13 @@ namespace Asteroids
 
         public BattleModuleView UiView { get; }
         public Model Model { get; }
-        public FieldView FieldView { get; set; }
+        public FieldController FieldController { get; set; }
 
-        public GameContext(BattleModuleView uiView, Model model, FieldView fieldView)
+        public GameContext(BattleModuleView uiView, Model model, FieldController fieldController)
         {
             UiView = uiView;
             Model = model;
-            FieldView = fieldView;
+            FieldController = fieldController;
         }
 
         public void ChangeState(GameState state)

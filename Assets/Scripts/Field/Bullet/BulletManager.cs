@@ -9,12 +9,12 @@ namespace Asteroids.Field
 
         private readonly GameObjectPool _pool;
         private readonly Transform _bulletContainer;
-        private readonly FieldView _fieldView;
+        private readonly FieldController _fieldController;
 
-        public BulletManager(GameObjectPool pool, FieldView fieldView, Transform bulletContainer)
+        public BulletManager(GameObjectPool pool, FieldController fieldController, Transform bulletContainer)
         {
             _pool = pool;
-            _fieldView = fieldView;
+            _fieldController = fieldController;
             _bulletContainer = bulletContainer;
         }
 
@@ -22,15 +22,15 @@ namespace Asteroids.Field
         {
             var bulletView = _pool.GetObject<BulletView>(bulletPrefab, _bulletContainer);
             bulletView.transform.SetPositionAndRotation(worldPosition, rotation);
-            var bulletController = new BulletController(bulletView, _fieldView, OnBulletDeath);
+            var bulletController = new BulletController(bulletView, _fieldController, OnBulletDeath);
             _bullets.Add(bulletController);
-            _fieldView.BoundsController.AddFieldEntity(bulletController);
+            _fieldController.BoundsController.AddFieldEntity(bulletController);
         }
 
         private void OnBulletDeath(BulletController bulletController)
         {
             _bullets.Remove(bulletController);
-            _fieldView.BoundsController.RemoveFieldEntity(bulletController);
+            _fieldController.BoundsController.RemoveFieldEntity(bulletController);
             _pool.UtilizeObject(bulletController.BulletView);
         }
 
