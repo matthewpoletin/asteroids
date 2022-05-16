@@ -87,7 +87,21 @@ namespace Asteroids.Field
 
         public Vector2 GetSpawnPosition()
         {
-            return new Vector2(Random.Range(_minX, _maxX), Random.Range(_minY, _maxY));
+            var spawnAreaWidth = (_maxX - _minX) / 20;
+            var spawnAreaHeight = (_maxY - _minY) / 20;
+            var x = new[]
+            {
+                Random.Range(_minX, _minX + spawnAreaWidth),
+                Random.Range(_maxX - spawnAreaWidth, _maxX),
+            }[Random.Range(0, 2)];
+
+            var y = new[]
+            {
+                Random.Range(_minY, _minY + spawnAreaHeight),
+                Random.Range(_maxY - spawnAreaHeight, _maxY),
+            }[Random.Range(0, 2)];
+
+            return new Vector2(x, y);
         }
 
         public void Reset()
