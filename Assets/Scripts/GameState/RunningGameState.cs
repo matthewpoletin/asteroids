@@ -9,6 +9,10 @@
 
         public override void Tick(float deltaTime)
         {
+            if (Context.FieldController.AllTargetsDestroyed)
+            {
+                Context.FieldController.SpawnNewWave();
+            }
         }
 
         private void OnShipDeath()

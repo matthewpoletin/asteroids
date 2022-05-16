@@ -28,6 +28,8 @@ namespace Asteroids.Field
 
         public BoundsController BoundsController => _boundsController;
 
+        public bool AllTargetsDestroyed => _asteroids.Count == 0 && _saucers.Count == 0;
+
         private FieldView FieldView { get; }
 
         public FieldController(FieldView fieldView, GameObjectPool pool, Model model)
