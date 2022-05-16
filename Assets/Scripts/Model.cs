@@ -6,7 +6,7 @@ namespace Asteroids
 {
     public class Model : ITick
     {
-        private int _userScore = 1;
+        private int _userScore;
         public event Action<int> OnUserScoreChanged;
 
         public int UserScore

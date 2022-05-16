@@ -1,3 +1,4 @@
+using Asteroids.Score;
 using UnityEngine;
 
 namespace Asteroids.Field
@@ -12,6 +13,7 @@ namespace Asteroids.Field
         [SerializeField] private ShipParams _shipParams = default;
         [SerializeField] private AsteroidParams _asteroidParams;
         [SerializeField] private SaucerParams _saucerParams;
+        [SerializeField] private ScoreParams _scoreParams;
 
         public GameObject AsteroidPrefab => _asteroidPrefab;
         public Transform AsteroidContainer => _asteroidContainer;
@@ -21,5 +23,6 @@ namespace Asteroids.Field
         public ShipParams ShipParams => _shipParams;
         public AsteroidParams AsteroidParams => _asteroidParams;
         public SaucerParams SaucerParams => _saucerParams;
+        public ScoreParams ScoreParams => _scoreParams;
     }
 }

@@ -2,6 +2,7 @@
 using Asteroids.Core.Core;
 using Asteroids.Field;
 using Asteroids.GameState;
+using Asteroids.Score;
 using Asteroids.UI;
 using UnityEngine;
 using Utils;
@@ -12,6 +13,7 @@ namespace Asteroids
     {
         private GameContext _gameContext;
         private FieldController _fieldController;
+        private ScoreManager _scoreManager;
 
         private Model _model;
 
@@ -26,7 +28,9 @@ namespace Asteroids
 
             var battleModuleView = Object.FindObjectOfType<BattleModuleView>();
 
-            _gameContext = new GameContext(battleModuleView, _model, _fieldController);
+            _scoreManager = new ScoreManager(_model, _fieldController, fieldView.ScoreParams);
+
+            _gameContext = new GameContext(battleModuleView, _model, _fieldController, _scoreManager);
 
             var initialGameState = new InitializeGameState();
             _gameContext.ChangeState(initialGameState);

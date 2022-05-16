@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Asteroids.Core.Core;
 using UnityEngine;
 using Utils;
+using Random = UnityEngine.Random;
 
 namespace Asteroids.Field
 {
@@ -11,6 +13,9 @@ namespace Asteroids.Field
         private const int ASTEROID_SPAWN_COUNT = 5;
         private const int SAUCER_SPAWN_COUNT = 1;
 
+        public event Action<AsteroidSize> AsteroidDestroyed;
+        public event Action SaucerDestroyed;
+
         private readonly List<AsteroidController> _asteroids = new();
         private readonly List<SaucerController> _saucers = new();
         private ShipController _shipController;
@@ -18,8 +23,10 @@ namespace Asteroids.Field
         private readonly GameObjectPool _pool;
         private readonly Model _model;
 
-        public BoundsController BoundsController { get; private set; }
-        private BulletManager _bulletManager;
+        private readonly BoundsController _boundsController;
+        private readonly BulletManager _bulletManager;
+
+        public BoundsController BoundsController => _boundsController;
 
         private FieldView FieldView { get; }
 
@@ -29,7 +36,7 @@ namespace Asteroids.Field
             _pool = pool;
             _model = model;
 
-            BoundsController = new BoundsController();
+            _boundsController = new BoundsController();
             _bulletManager = new BulletManager(pool, this, FieldView.transform);
         }
 
@@ -112,6 +119,12 @@ namespace Asteroids.Field
 
         public void DestroyAsteroid(AsteroidController asteroidController)
         {
+            AsteroidDestroyed?.Invoke(asteroidController.AsteroidSize);
+            UtilizeAsteroid(asteroidController);
+        }
+
+        private void UtilizeAsteroid(AsteroidController asteroidController)
+        {
             asteroidController.Utilize();
             _asteroids.Remove(asteroidController);
             BoundsController.RemoveFieldEntity(asteroidController);
@@ -149,6 +162,12 @@ namespace Asteroids.Field
 
         public void DestroySaucer(SaucerController saucerController)
         {
+            SaucerDestroyed?.Invoke();
+            UtilizeSaucer(saucerController);
+        }
+
+        private void UtilizeSaucer(SaucerController saucerController)
+        {
             _saucers.Remove(saucerController);
             BoundsController.RemoveFieldEntity(saucerController);
             _pool.UtilizeObject(saucerController.SaucerView);
@@ -159,7 +178,7 @@ namespace Asteroids.Field
             for (var index = _asteroids.Count - 1; index >= 0; index--)
             {
                 var asteroidController = _asteroids[index];
-                DestroyAsteroid(asteroidController);
+                UtilizeAsteroid(asteroidController);
             }
 
             _asteroids.Clear();
@@ -167,7 +186,7 @@ namespace Asteroids.Field
             for (var index = _saucers.Count - 1; index >= 0; index--)
             {
                 var saucerController = _saucers[index];
-                DestroySaucer(saucerController);
+                UtilizeSaucer(saucerController);
             }
 
             _saucers.Clear();

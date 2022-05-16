@@ -877,6 +877,7 @@ MonoBehaviour:
   _shipParams: {fileID: 11400000, guid: 6ce22840b58db1f4d9318f8ab502b97a, type: 2}
   _asteroidParams: {fileID: 11400000, guid: bf11b332d0261d94480951406a275e3e, type: 2}
   _saucerParams: {fileID: 11400000, guid: e234810165fbf0446ba2d84e9167848a, type: 2}
+  _scoreParams: {fileID: 11400000, guid: ca77b463dada928448fb94b33b2210a0, type: 2}
 --- !u!1 &2077976497
 GameObject:
   m_ObjectHideFlags: 0

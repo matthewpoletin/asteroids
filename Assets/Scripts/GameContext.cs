@@ -1,5 +1,6 @@
 ﻿using Asteroids.Core.Core;
 using Asteroids.Field;
+using Asteroids.Score;
 using Asteroids.UI;
 
 namespace Asteroids
@@ -10,13 +11,16 @@ namespace Asteroids
 
         public BattleModuleView UiView { get; }
         public Model Model { get; }
-        public FieldController FieldController { get; set; }
+        public FieldController FieldController { get; }
+        public ScoreManager ScoreManager { get; }
 
-        public GameContext(BattleModuleView uiView, Model model, FieldController fieldController)
+        public GameContext(BattleModuleView uiView, Model model, FieldController fieldController,
+            ScoreManager scoreManager)
         {
             UiView = uiView;
             Model = model;
             FieldController = fieldController;
+            ScoreManager = scoreManager;
         }
 
         public void ChangeState(GameState.GameState state)

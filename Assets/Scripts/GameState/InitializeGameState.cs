@@ -6,6 +6,7 @@
         {
             Context.FieldController.Reset();
 
+            Context.ScoreManager.Reset();
             var shipController = Context.FieldController.SpawnShip();
             Context.FieldController.SpawnNewWave();
 
