@@ -1,3 +1,4 @@
+using System;
 using Asteroids.Field;
 using UnityEngine;
 
@@ -19,11 +20,11 @@ namespace Asteroids.UI
             _shipDebugWidget.Connect(shipController);
         }
 
-        public void OpenResultsDialog()
+        public void OpenResultsDialog(Action onRestartButtonClick)
         {
             _resultsDialog.gameObject.SetActive(true);
 
-            _resultsDialog.Connect(_model);
+            _resultsDialog.Connect(_model, onRestartButtonClick);
         }
 
         public void CloseAllDialogs()

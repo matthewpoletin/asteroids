@@ -6,15 +6,21 @@ namespace Asteroids.GameState
     {
         public override void Initialize()
         {
-            Context.UiView.OpenResultsDialog();
+            Context.UiView.OpenResultsDialog(OnRestartButtonClick);
         }
 
         public override void Tick(float deltaTime)
         {
-            if (Keyboard.current.anyKey.wasPressedThisFrame)
-            {
-                Context.ChangeState(new InitializeGameState());
-            }
+        }
+
+        private void OnRestartButtonClick()
+        {
+            Restart();
+        }
+
+        private void Restart()
+        {
+            Context.ChangeState(new InitializeGameState());
         }
 
         public override void Dispose()
