@@ -6,9 +6,10 @@ namespace Asteroids.Field
 {
     public class BulletController : IDestroyedFieldActor, ITick
     {
+        private readonly FieldMover _fieldMover;
+
         private readonly Action<BulletController> _onBulletDeath;
         private readonly FieldController _fieldController;
-
         public BulletView BulletView { get; }
 
         public Transform Transform => BulletView.transform;
@@ -22,11 +23,13 @@ namespace Asteroids.Field
             _onBulletDeath = onBulletDeath;
 
             BulletView.Connect(OnTriggerEnter);
+
+            _fieldMover = new FieldMover(BulletView.transform);
         }
 
         public void Tick(float deltaTime)
         {
-            Transform.position += BulletView.transform.up * (BulletView.Speed * deltaTime);
+            _fieldMover.PerformMovement(deltaTime, BulletView.transform.up, BulletView.Speed);
         }
 
         public void OnLeavingBounds()

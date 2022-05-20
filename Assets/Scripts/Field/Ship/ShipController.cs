@@ -10,11 +10,11 @@ namespace Asteroids.Field
         private readonly GameObjectPool _pool;
         private readonly BulletManager _bulletManager;
         private readonly FieldController _fieldController;
-        private readonly ShipControls _shipControls;
 
         private LaserController _laserController;
 
         private Vector3 _currentSpeed = Vector2.zero;
+        private readonly ShipInput _shipInput;
         public float Speed => _currentSpeed.magnitude;
 
         public ShipView ShipView { get; }
@@ -33,8 +33,7 @@ namespace Asteroids.Field
             _fieldController = fieldController;
             _bulletManager = bulletManager;
 
-            _shipControls = new ShipControls();
-            _shipControls.Enable();
+            _shipInput = new ShipInput();
 
             ShipView.Connect(OnTriggerEnter);
 
@@ -53,7 +52,7 @@ namespace Asteroids.Field
         {
             var transform = ShipView.transform;
 
-            var accelerating = _shipControls.Default.Accelerate.inProgress;
+            var accelerating = _shipInput.AccelerateInProgress;
             if (accelerating)
             {
                 _currentSpeed += transform.up * Params.MoveAcceleration;
@@ -66,19 +65,19 @@ namespace Asteroids.Field
 
             ShipView.UpdateIdleState(accelerating);
 
-            if (_shipControls.Default.Steer.inProgress)
+            if (_shipInput.SteerInProgress)
             {
-                var direction = _shipControls.Default.Steer.ReadValue<float>();
+                var direction = _shipInput.SteerValue;
                 transform.RotateAround(transform.position, transform.forward,
                     -1 * Params.SteerSpeed * deltaTime * direction);
             }
 
-            if (_shipControls.Default.ShootLaser.triggered)
+            if (_shipInput.ShootLaserTriggered)
             {
                 ShootLaser();
             }
 
-            if (_shipControls.Default.ShootCannon.triggered)
+            if (_shipInput.ShootCannonTriggered)
             {
                 ShootCannon();
             }

@@ -6,7 +6,8 @@ namespace Asteroids.Field
     public class SaucerController : IFieldActor, ITick
     {
         private readonly ISaucerBehavior _saucerFollowShipBehavior;
-        private readonly ISaucerMover _saucerMover;
+        private readonly FieldMover _fieldMover;
+        private readonly SaucerParams _saucerParams;
 
         public Transform Transform => SaucerView.transform;
 
@@ -15,16 +16,18 @@ namespace Asteroids.Field
         public SaucerController(SaucerView saucerView, SaucerParams saucerParams, ShipController shipController)
         {
             SaucerView = saucerView;
+            _saucerParams = saucerParams;
 
             var transform = SaucerView.transform;
             _saucerFollowShipBehavior = new SaucerFollowShipBehavior(transform, shipController, saucerParams);
-            _saucerMover = new SaucerMover(transform, saucerParams);
+            _fieldMover = new FieldMover(transform);
         }
 
         public void Tick(float deltaTime)
         {
             _saucerFollowShipBehavior.Tick(deltaTime);
-            _saucerMover.PerformMovement(deltaTime, _saucerFollowShipBehavior.MovementDirection);
+            _fieldMover.PerformMovement(deltaTime, _saucerFollowShipBehavior.MovementDirection,
+                _saucerParams.MovementSpeed);
         }
     }
 }

@@ -9,6 +9,7 @@ namespace Asteroids.Field
         private readonly GameObjectPool _pool;
         private readonly AsteroidParams _asteroidParams;
         private readonly Vector2 _movementDirection;
+        private readonly FieldMover _fieldMover;
 
         private float MovementSpeed => _asteroidParams.GetAsteroidSpeed(_asteroidSize);
 
@@ -32,11 +33,13 @@ namespace Asteroids.Field
             AsteroidView = _pool.GetObject<AsteroidView>(asteroidPrefab, asteroidContainer);
             AsteroidView.SetAsteroidSpriteBySize(asteroidSize);
             AsteroidView.transform.position = spawnPosition;
+
+            _fieldMover = new FieldMover(AsteroidView.transform);
         }
 
         public void Tick(float deltaTime)
         {
-            AsteroidView.transform.position += (Vector3)_movementDirection * (MovementSpeed * deltaTime);
+            _fieldMover.PerformMovement(deltaTime, _movementDirection, MovementSpeed);
         }
 
         public void Utilize()
